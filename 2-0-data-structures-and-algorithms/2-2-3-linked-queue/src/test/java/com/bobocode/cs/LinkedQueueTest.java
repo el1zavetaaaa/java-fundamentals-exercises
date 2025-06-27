@@ -223,6 +223,23 @@ public class LinkedQueueTest {
         assertThat(isEmpty).isEqualTo(false);
     }
 
+    @Test
+    @Order(16)
+    void pollDeletes3ElementFromHead() {
+        addIntElementToQueue(11);
+        addIntElementToQueue(111);
+        addIntElementToQueue(3);
+        Integer firstElement = this.integerQueue.poll();
+        Integer secondElement = this.integerQueue.poll();
+        Integer thirdElement = this.integerQueue.poll();
+        boolean isEmpty = isEmptyQueue();
+
+        assertThat(isEmpty).isEqualTo(true);
+        assertThat(firstElement).isEqualTo(11);
+        assertThat(secondElement).isEqualTo(111);
+        assertThat(thirdElement).isEqualTo(3);
+    }
+
 
     private Class<?> getInnerStaticNodeClass() {
         return Arrays.stream(integerQueue.getClass().getDeclaredClasses())
