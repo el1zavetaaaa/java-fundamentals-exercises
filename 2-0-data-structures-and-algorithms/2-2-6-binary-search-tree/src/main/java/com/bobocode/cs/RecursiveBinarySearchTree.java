@@ -3,6 +3,7 @@ package com.bobocode.cs;
 import com.bobocode.util.ExerciseNotCompletedException;
 
 import java.util.Arrays;
+import java.util.Map;
 import java.util.function.Consumer;
 
 /**
@@ -101,11 +102,49 @@ public class RecursiveBinarySearchTree<T extends Comparable<T>> implements Binar
 
     @Override
     public int depth() {
-        throw new ExerciseNotCompletedException();
+        if(root == null){
+            return 0;
+        }
+        return depth(root);
+    }
+
+    public int depth(Node<T> node){
+        if (node == null)
+            return -1;
+
+        int depthLeft = depth(node.left);
+        int depthRight = depth(node.right);
+
+        return Math.max(depthLeft, depthRight) + 1;
     }
 
     @Override
     public void inOrderTraversal(Consumer<T> consumer) {
-        throw new ExerciseNotCompletedException();
+       inOrderTraversalUsingStack(root, consumer);
+    }
+
+    private void inOrderTraversalUsingStack(Node<T> node, Consumer<T> consumer){
+        var stack = new LinkedStack<Node<T>>();
+
+        Node<T> current = node;
+
+        while(!stack.isEmpty() || current != null) {
+            while (current != null) {
+                stack.push(current);
+                current = current.left;
+            }
+            current = stack.pop();
+            consumer.accept(current.element);
+            current = current.right;
+        }
+    }
+    private void inOrderTraversal(Node<T> node, Consumer<T> consumer){
+        if (node == null) {
+            return;
+        }
+        inOrderTraversal(node.left, consumer);
+        consumer.accept(node.element);
+        inOrderTraversal(node.right, consumer);
+
     }
 }
