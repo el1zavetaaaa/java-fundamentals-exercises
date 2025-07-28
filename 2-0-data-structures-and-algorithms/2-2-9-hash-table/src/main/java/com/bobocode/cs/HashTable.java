@@ -2,6 +2,8 @@ package com.bobocode.cs;
 
 import com.bobocode.util.ExerciseNotCompletedException;
 
+import java.util.Arrays;
+
 /**
  * {@link HashTable} is a simple Hashtable-based implementation of {@link Map} interface with some additional methods.
  * It is based on the array of {@link Node} objects. Both {@link HashTable} and {@link Node} have two type parameters:
@@ -203,7 +205,46 @@ public class HashTable<K, V> implements Map<K, V> {
      */
     @Override
     public V remove(K key) {
-        throw new ExerciseNotCompletedException(); // todo:
+        V deletedElement  = null;
+        final int index = calculateIndex(key, table.length);
+        for (int i = 0; i < table.length; i++) {
+           if(i == index){
+               if(table[i] != null && table[i].key.equals(key))
+               {
+                   deletedElement = table[i].value;
+                   Node<K,V> [] copyArr = new Node[table.length - 1];
+                   for (int j = 0; j < copyArr.length; j++) {
+                       if(table[j]!= null && !table[j].key.equals(key)){
+                           copyArr[j] = table[j];
+                       }
+                   }
+                   size--;
+                   table = copyArr;
+
+               } else {
+                   Node<K,V> current = table[i];
+                   Node<K,V> previous = null;
+                   while (current != null){
+                       if(current.key == key){
+                           if(current.next != null) {
+                               deletedElement = current.value;
+                               current.key = current.next.key;
+                               current.value = current.next.value;
+                               current.next = current.next.next;
+                           } else {
+                               previous.next = null;
+                               deletedElement = current.value;
+                               current = null;}
+                           size--;
+                       }
+                       previous = current;
+                       current = current!= null ? current.next : null;
+                   }
+               }
+           }
+        }
+
+        return deletedElement;
     }
 
     /**
@@ -229,7 +270,15 @@ public class HashTable<K, V> implements Map<K, V> {
      */
     @Override
     public String toString() {
-        throw new ExerciseNotCompletedException(); // todo:
+        final StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < table.length; i++) {
+           stringBuilder.append(i).append(": ");
+           if(table[i] != null) {
+               stringBuilder.append(table[i].key).append("=").append(table[i].value);
+           }
+           stringBuilder.append("\n");
+        }
+        return stringBuilder.toString();
     }
 
     /**
