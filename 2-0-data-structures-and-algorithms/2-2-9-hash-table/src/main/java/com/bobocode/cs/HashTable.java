@@ -27,6 +27,32 @@ import com.bobocode.util.ExerciseNotCompletedException;
  * @author Taras Boychuk
  */
 public class HashTable<K, V> implements Map<K, V> {
+    private static class Node<K,V> {
+        K key;
+        V value;
+
+        Node<K,V> next;
+
+        public Node(K key, V value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
+
+    private Node<K,V> [] table;
+    private int size;
+
+    private final static int DEFAULT_CAPACITY =8;
+
+    public HashTable() {
+        this.table = new Node[DEFAULT_CAPACITY];
+    }
+
+    public HashTable(int initialArraySize) {
+        if (initialArraySize < 0)
+            throw new IllegalArgumentException();
+        this.table = new Node[initialArraySize];
+    }
 
     /**
      * This method is a critical part of the hast table. The main idea is that having a key, you can calculate its index
@@ -43,7 +69,8 @@ public class HashTable<K, V> implements Map<K, V> {
      * @return array index of the given key
      */
     public static int calculateIndex(Object key, int tableCapacity) {
-        throw new ExerciseNotCompletedException(); // todo:
+        final int index = key.hashCode();
+        return Math.abs(index) % tableCapacity;
     }
 
     /**
@@ -59,7 +86,33 @@ public class HashTable<K, V> implements Map<K, V> {
      */
     @Override
     public V put(K key, V value) {
-        throw new ExerciseNotCompletedException(); // todo:
+        final int index = calculateIndex(key, table.length);
+        V previousVal = null;
+
+        if(size == 0){
+            table[index] = new Node<>(key, value);
+            size++;
+        }
+
+        else {
+            for (int i = 0; i < table.length; i++) {
+                if(index == i){
+                    if(table[i].key == key) {
+                        previousVal = table[i].value;
+                        table[i].value = value;
+                        break;
+                    }
+                    Node<K,V> current = table[i];
+                    while (current.next != null){
+                        current = current.next;
+                    }
+                    current.next = new Node<>(key, value);
+                    size ++;
+                }
+            }
+        }
+
+        return previousVal;
     }
 
     /**
@@ -71,7 +124,21 @@ public class HashTable<K, V> implements Map<K, V> {
      */
     @Override
     public V get(K key) {
-        throw new ExerciseNotCompletedException(); // todo:
+       final int index = calculateIndex(key, table.length);
+        for (int i = 0; i < table.length; i++) {
+            if(i == index){
+                Node<K,V> current = table[i];
+
+                while (current != null) {
+                    if(current.key == key){
+                        return current.value;
+                    }
+                    current = current.next;
+                }
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -82,7 +149,13 @@ public class HashTable<K, V> implements Map<K, V> {
      */
     @Override
     public boolean containsKey(K key) {
-        throw new ExerciseNotCompletedException(); // todo:
+        for (int i = 0; i < table.length; i++) {
+            if (table[i] != null && table[i].key == key) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -93,7 +166,13 @@ public class HashTable<K, V> implements Map<K, V> {
      */
     @Override
     public boolean containsValue(V value) {
-        throw new ExerciseNotCompletedException(); // todo:
+        for (int i = 0; i < table.length; i++) {
+            if(table[i] != null && table[i].value.equals(value)){
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -103,7 +182,7 @@ public class HashTable<K, V> implements Map<K, V> {
      */
     @Override
     public int size() {
-        throw new ExerciseNotCompletedException(); // todo:
+        return size;
     }
 
     /**
@@ -113,7 +192,7 @@ public class HashTable<K, V> implements Map<K, V> {
      */
     @Override
     public boolean isEmpty() {
-        throw new ExerciseNotCompletedException(); // todo:
+        return size  == 0;
     }
 
     /**

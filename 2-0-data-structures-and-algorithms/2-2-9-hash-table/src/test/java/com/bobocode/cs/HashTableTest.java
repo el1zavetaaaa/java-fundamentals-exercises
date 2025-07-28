@@ -283,17 +283,21 @@ class HashTableTest {
             var table = getInternalTable(hashTable);
             var prevValueA = hashTable.put("AaAa", 123);
             var prevValueB = hashTable.put("BBBB", 456);
+            var prevValueC = hashTable.put("thirdKey", 422);
             var containsKeyValueA = checkKeyValueExists("AaAa", 123);
             var containsKeyValueB = checkKeyValueExists("BBBB", 456);
+            var containsKeyValueC = checkKeyValueExists("thirdKey", 422);
             var bucketIndexA = HashTable.calculateIndex("AaAa", table.length);
             var bucketIndexB = HashTable.calculateIndex("BBBB", table.length);
+            var bucketIndexC = HashTable.calculateIndex("thirdKey", table.length);
 
             assertNull(prevValueA);
             assertNull(prevValueB);
             assertTrue(containsKeyValueA);
             assertTrue(containsKeyValueB);
-            assertThat(bucketIndexA).isEqualTo(bucketIndexB);
-            assertEquals(2, getSize());
+            assertTrue(containsKeyValueC);
+            assertThat(bucketIndexA).isEqualTo(bucketIndexB).isEqualTo(bucketIndexC);
+            assertEquals(3, getSize());
         }
 
         @Test
