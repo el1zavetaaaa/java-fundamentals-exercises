@@ -284,20 +284,46 @@ class HashTableTest {
             var prevValueA = hashTable.put("AaAa", 123);
             var prevValueB = hashTable.put("BBBB", 456);
             var prevValueC = hashTable.put("thirdKey", 422);
+            var prevValueD = hashTable.put("apple", 321);
+            var prevValueE = hashTable.put("banana", 654);
+            var prevValueF = hashTable.put("cherry", 987);
+            var prevValueG = hashTable.put("pineapple", 1000);
+            var prevValueH = hashTable.put("peach", 877);
             var containsKeyValueA = checkKeyValueExists("AaAa", 123);
             var containsKeyValueB = checkKeyValueExists("BBBB", 456);
             var containsKeyValueC = checkKeyValueExists("thirdKey", 422);
+            var containsKeyValueD = checkKeyValueExists("apple", 321);
+            var containsKeyValueE = checkKeyValueExists("banana", 654);
+            var containsKeyValueF = checkKeyValueExists("cherry", 987);
+            var containsKeyValueG = checkKeyValueExists("pineapple", 1000);
+            var containsKeyValueH = checkKeyValueExists("peach", 877);
             var bucketIndexA = HashTable.calculateIndex("AaAa", table.length);
             var bucketIndexB = HashTable.calculateIndex("BBBB", table.length);
             var bucketIndexC = HashTable.calculateIndex("thirdKey", table.length);
+            var bucketIndexD = HashTable.calculateIndex("apple", table.length);
+            var bucketIndexE = HashTable.calculateIndex("banana", table.length);
+            var bucketIndexF = HashTable.calculateIndex("cherry", table.length);
+            var bucketIndexG = HashTable.calculateIndex("pineapple", table.length);
+            var bucketIndexH = HashTable.calculateIndex("peach", table.length);
 
             assertNull(prevValueA);
             assertNull(prevValueB);
+            assertNull(prevValueC);
+            assertNull(prevValueD);
+            assertNull(prevValueE);
+            assertNull(prevValueF);
+            assertNull(prevValueG);
+            assertNull(prevValueH);
             assertTrue(containsKeyValueA);
             assertTrue(containsKeyValueB);
             assertTrue(containsKeyValueC);
-            assertThat(bucketIndexA).isEqualTo(bucketIndexB).isEqualTo(bucketIndexC);
-            assertEquals(3, getSize());
+            assertTrue(containsKeyValueD);
+            assertTrue(containsKeyValueE);
+            assertTrue(containsKeyValueF);
+            assertTrue(containsKeyValueG);
+            assertTrue(containsKeyValueH);
+            assertThat(bucketIndexA).isEqualTo(bucketIndexB).isEqualTo(bucketIndexC).isNotEqualTo(bucketIndexD).isNotEqualTo(bucketIndexE).isNotEqualTo(bucketIndexF).isNotEqualTo(bucketIndexG).isNotEqualTo(bucketIndexH);
+            assertEquals(8, getSize());
         }
 
         @Test

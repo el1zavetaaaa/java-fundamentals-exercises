@@ -2,6 +2,7 @@ package com.bobocode.cs;
 
 import com.bobocode.util.ExerciseNotCompletedException;
 
+import javax.xml.crypto.dom.DOMCryptoContext;
 import java.util.Arrays;
 
 /**
@@ -45,6 +46,7 @@ public class HashTable<K, V> implements Map<K, V> {
     private int size;
 
     private final static int DEFAULT_CAPACITY =8;
+    private final static double LOAD_FACTOR =0.75;
 
     public HashTable() {
         this.table = new Node[DEFAULT_CAPACITY];
@@ -88,33 +90,38 @@ public class HashTable<K, V> implements Map<K, V> {
      */
     @Override
     public V put(K key, V value) {
+        resizeIfNeeded();
         final int index = calculateIndex(key, table.length);
         V previousVal = null;
 
-        if(size == 0){
+        if(table[index] == null){
             table[index] = new Node<>(key, value);
             size++;
         }
 
         else {
-            for (int i = 0; i < table.length; i++) {
-                if(index == i){
-                    if(table[i].key == key) {
-                        previousVal = table[i].value;
-                        table[i].value = value;
-                        break;
+                    if(table[index].key == key) {
+                        previousVal = table[index].value;
+                        table[index].value = value;
+                    } else {
+                        Node<K, V> current = table[index];
+                        while (current.next != null) {
+                            current = current.next;
+                        }
+                        current.next = new Node<>(key, value);
+                        size++;
                     }
-                    Node<K,V> current = table[i];
-                    while (current.next != null){
-                        current = current.next;
-                    }
-                    current.next = new Node<>(key, value);
-                    size ++;
                 }
-            }
-        }
+
 
         return previousVal;
+    }
+
+    private void resizeIfNeeded(){
+        final int threshold = (int) (table.length * LOAD_FACTOR);
+        if(size > threshold){
+            resizeTable(2 * table.length);
+        }
     }
 
     /**
@@ -295,6 +302,11 @@ public class HashTable<K, V> implements Map<K, V> {
      * @param newCapacity a size of the new underlying array
      */
     public void resizeTable(int newCapacity) {
-        throw new ExerciseNotCompletedException(); // todo:
+        Node<K,V>[] resizedTable = new Node[newCapacity];
+        for (int i = 0; i < table.length; i++) {
+            resizedTable[i] = table[i];
+        }
+
+        table = resizedTable;
     }
 }
